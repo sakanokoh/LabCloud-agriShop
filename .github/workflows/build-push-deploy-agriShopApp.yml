@@ -33,7 +33,6 @@ jobs:
 
       - name: Push Docker Image to DockerHub
         run: |
-          docker tag flask-agriapp:v1 ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
           docker push ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
 
   # Job 3: Deploy in a Cloud Serverless Container Service
