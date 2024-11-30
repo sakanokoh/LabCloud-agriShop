@@ -3,7 +3,7 @@ name: Build and Deploy Flask App (argi-shop)
 on:
   push:
     branches:
-      - main
+      - main1
 
 jobs:
   # Job pour construire et pousser l'image Docker
