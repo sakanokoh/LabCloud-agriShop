@@ -119,32 +119,32 @@ Voici les résultats visuels du processus CI/CD :
 
 ### 1. **Image Docker sur DockerHub**
    L'image Docker construite et poussée vers DockerHub est disponible sous le nom `flask-agriapp:v1`. Vous pouvez la retrouver dans votre compte DockerHub.
-   
-   ![Image Docker sur DockerHub](imagesDemo\imageDockurHub.png) 
+    
+   <img src="imagesDemo\imageDockurHub.png" width="1200" height="300">
 
 
 ### 2. **Image de l'ACR (Azure Container Registry)**
    Si vous utilisez un ACR pour stocker les images Docker, voici l'image de l'ACR où l'image a été poussée :
 
-   ![ACR sur Azure](imagesDemo\azureContainerRegister.png)
+  <img src="imagesDemo\azureContainerRegister.png" width="1200" height="300">
 
    Details  
-   ![Details ACR sur Azure](imagesDemo\acr-details.png)
+  <img src="imagesDemo\acr-details.png" width="1200" height="300">
 
 ### 3. **Image de l'App Déployée sur Azure Container Apps**
    L'application Flask est déployée sur Azure Container Apps et accessible via un endpoint public. Voici une capture d'écran de l'application déployée :
 
    Accueil
-   ![App Déployée sur Azure](imagesDemo\accueil-app-deployed.png) 
+   <img src="imagesDemo\accueil-app-deployed.png" width="1200" height="300">
 
    Produits
-   ![App Déployée sur Azure](imagesDemo\produits-catalog.png)
+   <img src="imagesDemo\produits-catalog.png" width="1200" height="300">
 
 ### 4. **Image de Succès des Jobs GitHub Actions**
    Voici une image montrant le succès des trois jobs dans GitHub Actions : **Build**, **Scan**, et **Deploy**.
 
    Action echoué par le manque du niveau de securité recommandé
-   ![Echec et Succès des Jobs GitHub Actions](imagesDemo\sec-fail-flow.png)  
+   <img src="imagesDemo\sec-fail-flow.png" width="1200" height="300">
 
    Details de l'action réusssi
-    ![Details succès des Jobs GitHub Actions](imagesDemo\succes-jobs.png) 
+   <img src="imagesDemo\succes-jobs.png" width="1200" height="300">
