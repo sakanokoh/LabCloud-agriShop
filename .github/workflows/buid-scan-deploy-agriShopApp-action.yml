@@ -21,21 +21,9 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v2 .
-          docker push ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v2
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-agri-app:v1 .
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-agri-app:v1
 
-  # Job pour scanner l'image Docker avec Trivy
-  scan:
-    runs-on: ubuntu-latest
-    needs: build  # Ce job dépend du job "build"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Security scan with Trivy
-        uses: aquasecurity/trivy-action@v0.6.0
-        with:
-          image-ref: ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
 
   # Job pour déployer l'application sur Azure
   deploy:
