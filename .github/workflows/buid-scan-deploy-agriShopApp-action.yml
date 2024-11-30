@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1 .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v2 .
           docker push ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v2
 
   # Job pour scanner l'image Docker avec Trivy
