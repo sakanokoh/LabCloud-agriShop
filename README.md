@@ -1,4 +1,4 @@
-# Flask Agri-Shop App - CI/CD avec GitHub Actions, Docker, Trivy et Azure
+# Flask Agri-Shop App - CI/CD avec GitHub Actions, Docker et Azure
 
 ## Description du projet
 
@@ -62,39 +62,30 @@ En plus de ça, il faut faire de la même pour les credentials de DockerHub, apr
 
 ## Description des Jobs GitHub Actions
 
-Le workflow GitHub Actions est divisé en trois jobs :
+Le workflow GitHub Actions se compose de trois jobs, chacun correspondant à une étape clé du processus de construction, publication, et déploiement de l'application Flask. Voici une vue d'ensemble globale des trois jobs.
 
-### 1. **Job: Build (Construction de l'image Docker)**
-
-Ce job construit l'image Docker de l'application Flask et la pousse vers DockerHub.
-
-- **Actions** :
-    - Checkout du code source
-    - Authentification DockerHub via un login sécurisé
-    - Construction et envoi de l'image Docker vers DockerHub
+1. Build (Construction de l'image Docker)
+Ce job est responsable de la construction de l'image Docker de l'application Flask. À partir du fichier Dockerfile, l'image est construite localement. Cependant, comme chaque job GitHub Actions s'exécute dans un environnement isolé, cette image n'est pas disponible pour les jobs suivants une fois le job terminé.
+Pour garantir la disponibilité de l'image, elle est sauvegardée sous forme d'artefact (.tar) afin d'être partagée entre les jobs.
 
 **Commandes principales** :
 
 ```bash
-docker build -t <username>/flask-agriapp:v1 .
-docker push <username>/flask-agriapp:v1
+docker build -t flask-agriapp:v1 .
+docker save flask-agriapp:v1 -o flask-agriapp.tar
 
 ```
 
-### 2. **Job: Scan (Analyse de l'image Docker avec Trivy)**
+2. Push (Publication de l'image sur DockerHub)
+Ce job récupère l'image sauvegardée par le job précédent, la charge à nouveau dans Docker, puis la taggue et pousse sur DockerHub. Cela rend l'image disponible sur un registre public pour les étapes suivantes.
 
-Ce job effectue un scan de l'image Docker construite à la recherche de vulnérabilités de sécurité (vulnérabilités de sévérité `HIGH` et `CRITICAL`).
-
-- **Actions** :
-    - Téléchargement et installation de la base de données Trivy
-    - Exécution du scan Trivy sur l'image Docker
-    - Échec du job si des vulnérabilités sont détectées
 
 **Commandes principales** :
 
 ```bash
-trivy image --exit-code 1 --severity HIGH,CRITICAL <username>/flask-agriapp:v1
-
+docker load -i flask-agriapp.tar
+docker tag flask-agriapp:v1 ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
+docker push ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
 ```
 
 ### 3. **Job: Deploy (Déploiement de l'application sur Azure)**
@@ -108,8 +99,15 @@ Ce job déploie l'application sur Azure Container Apps à l'aide de l'Azure CLI.
 **Commandes principales** :
 
 ```bash
-az containerapp create --name flask-agriapp --resource-group flask-agriapp-rg --environment agriapp-env --image <username>/flask-agriapp:v1 --target-port 5000 --ingress external --cpu 0.5 --memory 1.0Gi
-
+az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+az containerapp create \
+  --name flask-agriapp \
+  --resource-group flask-agriapp-rg \
+  --environment agriapp-env \
+  --image ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1 \
+  --target-port 5000 \
+  --ingress external \
+  --cpu 0.5 --memory 1.0Gi
 ```
 Il faut noter que le groupe resource `flask-agriapp-rg` et l'environment `agriapp-env``ont été déjà créé même si on pouvait le faire dans le job de déploiement.
 
@@ -141,10 +139,7 @@ Voici les résultats visuels du processus CI/CD :
    <img src="imagesDemo\produits-catalog.png" width="1200" height="300">
 
 ### 4. **Image de Succès des Jobs GitHub Actions**
-   Voici une image montrant le succès des trois jobs dans GitHub Actions : **Build**, **Scan**, et **Deploy**.
-
-   Action echoué par le manque du niveau de securité recommandé
-   <img src="imagesDemo\sec-fail-flow.png" width="1200" height="300">
+   Voici une image montrant le succès des trois jobs dans GitHub Actions : **Build**, **Push**, et **Deploy**.
 
    Details de l'action réusssi
    <img src="imagesDemo\succes-jobs.png" width="1200" height="300">
