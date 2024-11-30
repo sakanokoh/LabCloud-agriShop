@@ -2,7 +2,7 @@
 
 ## Description du projet
 
-Ce projet a pour objectif de déployer une application Flask (Flask AgriApp) sur Azure à l'aide de Docker et de GitHub Actions. L'application est construite dans un conteneur Docker, scannée pour des vulnérabilités de sécurité avec **Trivy**, puis déployée sur **Azure Container Apps**. Ce workflow assure une intégration continue et un déploiement continu (CI/CD), tout en garantissant la sécurité des images Docker.
+Ce projet a pour objectif de déployer une application Flask (Flask AgriApp) sur Azure à l'aide de Docker et de GitHub Actions. L'application est construite dans un conteneur Docker, pushé dans **DockerHub**, puis déployée sur **Azure Container Apps**. Ce workflow assure une intégration continue et un déploiement continu (CI/CD), tout en garantissant la sécurité des images Docker.
 
 ## Outils nécessaires
 
