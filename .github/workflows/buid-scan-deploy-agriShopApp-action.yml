@@ -1,0 +1,62 @@
+name: Build, scan and Deploy Flask App (agri-shop)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Job pour construire et pousser l'image Docker
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1 .
+          docker push ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
+
+  # Job pour scanner l'image Docker avec Trivy
+  scan:
+    runs-on: ubuntu-latest
+    needs: build  # Ce job dépend du job "build"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Security scan with Trivy
+        uses: aquasecurity/trivy-action@v0.6.0
+        with:
+          image-ref: ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1
+
+  # Job pour déployer l'application sur Azure
+  deploy:
+    runs-on: ubuntu-latest
+    needs: scan  # Ce job dépend du job "scan"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Azure
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} \
+                      -p ${{ secrets.AZURE_CLIENT_SECRET }} \
+                      --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az containerapp create \
+              --name flask-agriapp \
+              --resource-group flask-agriapp-rg \
+              --environment agriapp-env \
+              --image ${{ secrets.DOCKER_USERNAME }}/flask-agriapp:v1 \
+              --target-port 5000 \
+              --ingress external \
+              --cpu 0.5 --memory 1.0Gi
