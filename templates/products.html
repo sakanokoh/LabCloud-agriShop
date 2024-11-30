@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits Agricoles - AgriShop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>AgriShop - Produits Agricoles</h1>
+    </header>
+
+    <div class="product-list">
+        <h2>Nos produits disponibles</h2>
+        <div class="card-container">
+            {% for product in products %}
+                <div class="product-card">
+                    <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                    <div class="product-info">
+                        <h3>{{ product.name }}</h3>
+                        <p><strong>Prix:</strong> {{ product.price }} CFA/kg</p>
+                        <p><strong>Lieu:</strong> {{ product.location }}</p>
+                        <p><strong>Solde restant:</strong> {{ product.stock }} kg</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 AgriShop. Tous droits réservés.</p>
+    </footer>
+</body>
+</html>

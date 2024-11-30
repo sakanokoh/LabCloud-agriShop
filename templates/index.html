@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur AgriShop </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>AgriShop - Vente de produits agricoles</h1>
+    </header>
+
+    <div class="main-content">
+        <h2>Bienvenue sur AgriShop de HAMSAK!</h2>
+        <p>Nous vous proposons une variété de produits agricoles frais, cultivés localement, et disponibles à des prix compétitifs. Explorez notre sélection de produits et passez vos commandes.</p>
+        <a href="{{ url_for('products_page') }}" class="button">Voir les produits</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 AgriShop. Tous droits réservés.</p>
+    </footer>
+</body>
+</html>
